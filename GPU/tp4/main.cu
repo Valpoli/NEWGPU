@@ -37,10 +37,10 @@ __global__ void scan1(int* x, int N)
 	{
 		int offset = pow(2, n);
 
-		if ( n == 0 || i <= (8/2)/(2*n) )
+		if ( n == 0 || i < (8/2)/(2*n) )
 		{
-			int index = i + (n * 2 - 1) + offset;
-			printf("%d , %d , \n", x[index], x[index - offset]);
+			int index = i + 1 * pow(2, d) -1;
+			printf("%d, %d , %d , %d , \n",n,i, index, index - offset);
 			x[index] = x[index] + x[index - offset]; 
 		}
 		__syncthreads();

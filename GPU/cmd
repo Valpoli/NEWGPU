@@ -1,1 +1,1 @@
-nvcc -w mandelbrot.cu image.cpp -allow-unsupported-compiler
+nvcc -w mandelbrot.cu -allow-unsupported-compiler
