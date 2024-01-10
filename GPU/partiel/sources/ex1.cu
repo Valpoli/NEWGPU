@@ -9,11 +9,10 @@ void kernel_conv1(int* x, int* y, int N, int M, int* z)
     for (int k = -P; k <= P; ++k) {
         if (i + k >= 0 && i + k < N)
         {
-            // total += y[k + P] * x[i+k]
-            total += y[0] * x[0];
+            total += y[k + P] * x[i+k];
         }
     }
-    z[i] = total;
+    z[i] = x[0];
 }
 
 std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
