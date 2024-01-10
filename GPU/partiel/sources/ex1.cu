@@ -12,7 +12,7 @@ void kernel_conv1(int* x, int* y, int N, int M, int* z)
             total += y[i+k] * x[i+k];
         }
      }
-    z[i] = total;
+    z[i] = 777;
 }
 
 std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
