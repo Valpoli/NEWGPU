@@ -19,8 +19,8 @@ std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
 {
     int *x_GPU;
     int *y_GPU;
-    cudaMalloc(&x_GPU, x.size() * sizeof(int))
-    cudaMalloc(&y_GPU, y.size() * sizeof(int))
+    cudaMalloc(&x_GPU, x.size() * sizeof(int));
+    cudaMalloc(&y_GPU, y.size() * sizeof(int));
     cudaMemcpy(x_GPU, x.data(), x.size() * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(y_GPU, y.data(), y.size() * sizeof(int), cudaMemcpyHostToDevice);
     int *res_GPU;
