@@ -29,7 +29,7 @@ std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
     const dim3 blocks((x.size()/BLOCK_SIZE) + 1, 1, 1);
 
     kernel_conv1<<<blocks,threads_per_block>>>(x_GPU,y_GPU,x.size(),y.size(),res_GPU);
-    std::vector<int> res(x.size());
+    int *res = (int*) malloc(sizeof(int) * x.size());
 
     cudaMemcpy(res, res_GPU, x.size() * sizeof(int), cudaMemcpyDeviceToHost);
 
