@@ -10,7 +10,7 @@ void kernel_matvecmul1(int* A, int* b, int N, int M, int* c)
         int result = 0;
         for (int k = 0; k < M; ++k) {
             int element_A = A[j + i * M];
-            int element_B = B[j];
+            int element_B = b[j];
             result += element_A * element_B;
         }
         c[i] = result;
@@ -34,16 +34,15 @@ std::vector<int> matvecmul1(const std::vector<int>& A, const std::vector<int>& b
     cudaMalloc(&res_GPU, N * sizeof(int));
 
     cudaMemcpy(d_A, A.data(), N * M * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B, B.data(), M * sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, b.data(), M * sizeof(int), cudaMemcpyHostToDevice);
 
     kernel_matvecmul1<<<blocks,threads_per_block>>>(d_A,d_B,N,M,res_GPU);
 
-    cudaMemcpy(res, res_GPU, N * sizeof(int), cudaMemcpyDeviceToHost);
 
     int *res = (int*) malloc(sizeof(int) * N);
-    cudaMemcpy(res, res_GPU, x.size() * sizeof(int), cudaMemcpyDeviceToHost);
+    cudaMemcpy(res, res_GPU, N * sizeof(int), cudaMemcpyDeviceToHost);
 
-    std::vector<int> res_vec(x.size());
+    std::vector<int> res_vec(N);
 
     for (int k = 0; k < x.size(); ++k) {
         res_vec[k] = res[k];
