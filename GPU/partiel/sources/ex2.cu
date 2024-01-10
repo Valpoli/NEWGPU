@@ -9,8 +9,8 @@ void kernel_matvecmul1(int* A, int* b, int N, int M, int* c)
     if (i < N && j < M) {
         int result = 0;
         for (int k = 0; k < M; ++k) {
-            int element_A = A[j + i * M];
-            int element_B = b[j];
+            int element_A = A[k + i * M];
+            int element_B = b[k];
             result += element_A * element_B;
         }
         c[i] = result;
