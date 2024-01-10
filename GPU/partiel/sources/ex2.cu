@@ -56,61 +56,61 @@ std::vector<int> matvecmul1(const std::vector<int>& A, const std::vector<int>& b
 
 
 
-__global__
-void kernel_matvecmul2(int* A, int* b, int N, int M, int* c)
-{
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-    accu = 0;
-    tx = threadIdx.x;
-    bx= blockIdx.x;
-    __shared__ int s_a[BLOCK SIZE][BLOCK SIZE];
-    __shared__ int s_b[BLOCK SIZE];
-    if (i < N && j < M) {
-        int result = 0;
-        for (int k = 0; k < M; ++k) {
-            int element_A = A[k + i * M];
-            int element_B = b[k];
-            result += element_A * element_B;
-        }
-        c[i] = result;
-        __syncthreads();
-    }
-    __syncthreads();
-}
+// __global__
+// void kernel_matvecmul2(int* A, int* b, int N, int M, int* c)
+// {
+//     int i = blockIdx.x * blockDim.x + threadIdx.x;
+//     int j = blockIdx.y * blockDim.y + threadIdx.y;
+//     accu = 0;
+//     tx = threadIdx.x;
+//     bx= blockIdx.x;
+//     __shared__ int s_a[BLOCK SIZE][BLOCK SIZE];
+//     __shared__ int s_b[BLOCK SIZE];
+//     if (i < N && j < M) {
+//         int result = 0;
+//         for (int k = 0; k < M; ++k) {
+//             int element_A = A[k + i * M];
+//             int element_B = b[k];
+//             result += element_A * element_B;
+//         }
+//         c[i] = result;
+//         __syncthreads();
+//     }
+//     __syncthreads();
+// }
 
-std::vector<int> matvecmul2(const std::vector<int>& A, const std::vector<int>& b)
-{
-    const int M = b.size();    
-    const int N = A.size() / M;
+// std::vector<int> matvecmul2(const std::vector<int>& A, const std::vector<int>& b)
+// {
+//     const int M = b.size();    
+//     const int N = A.size() / M;
 
-    const dim3 threads_per_block(BLOCK_SIZE,BLOCK_SIZE,1);
-    const dim3 blocks((N + BLOCK_SIZE -1)/BLOCK_SIZE, (M + BLOCK_SIZE -1)/BLOCK_SIZE, 1);
+//     const dim3 threads_per_block(BLOCK_SIZE,BLOCK_SIZE,1);
+//     const dim3 blocks((N + BLOCK_SIZE -1)/BLOCK_SIZE, (M + BLOCK_SIZE -1)/BLOCK_SIZE, 1);
 
-    int *d_A;
-    int *d_B;
-    int *res_GPU;
+//     int *d_A;
+//     int *d_B;
+//     int *res_GPU;
 
-    cudaMalloc(&d_A, N * M * sizeof(int));
-    cudaMalloc(&d_B, M * sizeof(int));
-    cudaMalloc(&res_GPU, N * sizeof(int));
+//     cudaMalloc(&d_A, N * M * sizeof(int));
+//     cudaMalloc(&d_B, M * sizeof(int));
+//     cudaMalloc(&res_GPU, N * sizeof(int));
 
-    cudaMemcpy(d_A, A.data(), N * M * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B, b.data(), M * sizeof(int), cudaMemcpyHostToDevice);
+//     cudaMemcpy(d_A, A.data(), N * M * sizeof(int), cudaMemcpyHostToDevice);
+//     cudaMemcpy(d_B, b.data(), M * sizeof(int), cudaMemcpyHostToDevice);
 
-    kernel_matvecmul1<<<blocks,threads_per_block>>>(d_A,d_B,N,M,res_GPU);
+//     kernel_matvecmul1<<<blocks,threads_per_block>>>(d_A,d_B,N,M,res_GPU);
 
 
-    int *res = (int*) malloc(sizeof(int) * N);
-    cudaMemcpy(res, res_GPU, N * sizeof(int), cudaMemcpyDeviceToHost);
+//     int *res = (int*) malloc(sizeof(int) * N);
+//     cudaMemcpy(res, res_GPU, N * sizeof(int), cudaMemcpyDeviceToHost);
 
-    std::vector<int> res_vec(N);
+//     std::vector<int> res_vec(N);
 
-    for (int k = 0; k < N; ++k) {
-        res_vec[k] = res[k];
-    }
-    cudaFree(d_A);
-    cudaFree(d_B);
-    cudaFree(res_GPU);
-    return res_vec;
-}
+//     for (int k = 0; k < N; ++k) {
+//         res_vec[k] = res[k];
+//     }
+//     cudaFree(d_A);
+//     cudaFree(d_B);
+//     cudaFree(res_GPU);
+//     return res_vec;
+// }
