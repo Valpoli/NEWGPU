@@ -38,7 +38,6 @@ std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
         test[k] = res[k];
     }
 
-    std::vector<int> test(x.size());
 
     cudaFree(x_GPU);
     cudaFree(y_GPU);
