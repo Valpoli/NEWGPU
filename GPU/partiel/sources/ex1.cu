@@ -32,17 +32,17 @@ std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
     int *res = (int*) malloc(sizeof(int) * x.size());
     cudaMemcpy(res, res_GPU, x.size() * sizeof(int), cudaMemcpyDeviceToHost);
 
-    std::vector<int> test(x.size());
+    std::vector<int> res_vec(x.size());
+
+    std::cout << res[0] << " ";
 
     for (int k = 0; k < x.size(); ++k) {
-        test[k] = res[k];
+        res_vec[k] = res[k];
     }
-
-
     cudaFree(x_GPU);
     cudaFree(y_GPU);
     cudaFree(res_GPU);
-    return test;
+    return res_vec;
 }
 
 
