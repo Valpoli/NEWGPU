@@ -12,7 +12,7 @@ void kernel_conv1(int* x, int* y, int N, int M, int* z)
             total += y[i+k] * x[i+k];
         }
      }
-    z[i] = 777;
+    z[i] = i;
 }
 
 std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
@@ -33,8 +33,6 @@ std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
     cudaMemcpy(res, res_GPU, x.size() * sizeof(int), cudaMemcpyDeviceToHost);
 
     std::vector<int> res_vec(x.size());
-
-    std::cout << res[0] << " ";
 
     for (int k = 0; k < x.size(); ++k) {
         res_vec[k] = res[k];
