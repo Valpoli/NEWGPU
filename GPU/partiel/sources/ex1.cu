@@ -55,12 +55,52 @@ void kernel_conv2(int* x, int* y, int N, int M, int* z)
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     
     __shared__ int s_x[BLOCK_SIZE];
-
-    // ...
+    s_x[i%BLOCK_SIZE] = x[i];
+    __syncthreads();
+    int total = 0;
+    for (int k = -P; k <= P; ++k) {
+        if (i + k >= 0 && i + k < N)
+        {
+            if (i%BLOCK_SIZE + k < 0 || i%BLOCK_SIZE + k >= BLOCK_SIZE)
+            {
+                total += y[k + P] * x[i+k];
+            }
+            else
+            {
+                total += y[k + P] * s_x[i%BLOCK_SIZE + k];
+            }
+        }
+    }
+    z[i] = total;
 }
 
 std::vector<int> conv2(const std::vector<int>& x, const std::vector<int>& y)
 {
-    // ...
-    return {};
+    int *x_GPU;
+    int *y_GPU;
+    cudaMalloc(&x_GPU, x.size() * sizeof(int));
+    cudaMalloc(&y_GPU, y.size() * sizeof(int));
+    cudaMemcpy(x_GPU, x.data(), x.size() * sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(y_GPU, y.data(), y.size() * sizeof(int), cudaMemcpyHostToDevice);
+    int *res_GPU;
+    cudaMalloc(&res_GPU, x.size() * sizeof(int));
+
+    const dim3 threads_per_block(BLOCK_SIZE,1,1);
+
+    const dim3 blocks((x.size()/BLOCK_SIZE) + 1, 1, 1);
+
+    kernel_conv1<<<blocks,threads_per_block>>>(x_GPU,y_GPU,x.size(),y.size(),res_GPU);
+
+    int *res = (int*) malloc(sizeof(int) * x.size());
+    cudaMemcpy(res, res_GPU, x.size() * sizeof(int), cudaMemcpyDeviceToHost);
+
+    std::vector<int> res_vec(x.size());
+
+    for (int k = 0; k < x.size(); ++k) {
+        res_vec[k] = res[k];
+    }
+    cudaFree(x_GPU);
+    cudaFree(y_GPU);
+    cudaFree(res_GPU);
+    return res_vec;
 }
