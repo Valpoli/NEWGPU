@@ -30,13 +30,13 @@ std::vector<int> conv1(const std::vector<int>& x, const std::vector<int>& y)
 
     kernel_conv1<<<blocks,threads_per_block>>>(x_GPU,y_GPU,x.size(),y.size(),res_GPU);
     int *res = (int*) malloc(sizeof(int) * x.size());
-
+    std::vector<int> test = res;
     cudaMemcpy(res, res_GPU, x.size() * sizeof(int), cudaMemcpyDeviceToHost);
 
     cudaFree(x_GPU);
     cudaFree(y_GPU);
     cudaFree(res_GPU);
-    return res;
+    return test;
 }
 
 
