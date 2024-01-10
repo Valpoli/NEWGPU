@@ -44,7 +44,7 @@ std::vector<int> matvecmul1(const std::vector<int>& A, const std::vector<int>& b
 
     std::vector<int> res_vec(N);
 
-    for (int k = 0; k < x.size(); ++k) {
+    for (int k = 0; k < N; ++k) {
         res_vec[k] = res[k];
     }
     cudaFree(d_A);
